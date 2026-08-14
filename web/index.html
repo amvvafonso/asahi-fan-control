@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Asahi Fan Control</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">APPLE SILICON · ASAHI LINUX</p>
+        <h1>Fan Control</h1>
+      </div>
+      <div id="connection" class="status"><i></i><span>A ligar</span></div>
+    </header>
+
+    <section class="hero card">
+      <div class="temperature">
+        <span id="hottest">--</span><small>°C</small>
+        <p>temperatura máxima</p>
+      </div>
+      <div class="mode-copy">
+        <span id="control-pill" class="pill">SMC Apple</span>
+        <h2 id="mode-title">Controlo original</h2>
+        <p id="mode-description">O computador gere automaticamente as ventoinhas.</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Modo</h3>
+      <div class="segmented" id="modes">
+        <button data-mode="smc">SMC Apple</button>
+        <button data-mode="auto">Curva automática</button>
+        <button data-mode="manual">Manual</button>
+      </div>
+    </section>
+
+    <section id="preset-section">
+      <h3>Perfil térmico</h3>
+      <div class="profiles" id="profiles"></div>
+    </section>
+
+    <section id="manual-section" class="card manual hidden">
+      <div><h3>Velocidade manual</h3><strong><span id="manual-value">50</span>%</strong></div>
+      <input id="manual-slider" type="range" min="20" max="100" value="50">
+      <p>A temperatura crítica continua a forçar 100%.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h3>Ventoinhas</h3><span id="override"></span></div>
+      <div id="fans" class="fan-grid"></div>
+    </section>
+
+    <section>
+      <h3>Sensores mais quentes</h3>
+      <div id="sensors" class="sensor-list card"></div>
+    </section>
+
+    <div id="warning" class="warning hidden"></div>
+    <footer>Asahi Fan Control <span id="version"></span> · painel local</footer>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

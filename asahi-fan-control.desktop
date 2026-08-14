@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Asahi Fan Control
+Comment=Controlar as ventoinhas e temperaturas do MacBook
+Exec=xdg-open http://127.0.0.1:8799
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Monitor;
+StartupNotify=true

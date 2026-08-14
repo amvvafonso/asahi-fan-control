@@ -1,0 +1,15 @@
+{
+  "poll_interval": 1.0,
+  "emergency_temperature": 92.0,
+  "critical_temperature": 100.0,
+  "deactivation_hysteresis": 5.0,
+  "rpm_step_percent": 12.0,
+  "sensor_include_regex": ".*",
+  "sensor_exclude_regex": "(?i)(ambient|battery|palm|wireless)",
+  "default_preset": "balanced",
+  "web": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 8799
+  }
+}

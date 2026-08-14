@@ -1,0 +1,20 @@
+[Unit]
+Description=Asahi Fan Control
+Documentation=file:///opt/asahi-fan-control/README.md
+After=multi-user.target
+
+[Service]
+Type=simple
+NotifyAccess=all
+ExecStart=/usr/bin/python3 /opt/asahi-fan-control/asahi_fan_control.py
+Restart=on-failure
+RestartSec=2
+WatchdogSec=8
+TimeoutStopSec=5
+User=root
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
