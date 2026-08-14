@@ -130,6 +130,3 @@ sudo ./uninstall.sh
 
 The uninstaller preserves `/etc/asahi-fan-control.json` and hands the fans back to the SMC before removing the service.
 
-## License
-
-No license file is currently included in this repository. Consider adding one (e.g. MIT, GPLv3) to clarify how others may use, modify, and distribute this project.
