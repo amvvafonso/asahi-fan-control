@@ -1,6 +1,17 @@
 # Asahi Fan Control
 
-Local fan controller for Apple Silicon MacBook Pro running Asahi Linux. It talks directly to the `hwmon` interface exposed by the `macsmc-hwmon` driver, with no external libraries.
+Local fan controller for Apple Silicon MacBook Pro running Asahi Linux. It talks directly to the `hwmon` interface exposed by the `macsmc-hwmon` driver — no external libraries required.
+
+## Table of Contents
+
+- [Safety](#safety)
+- [Installation](#installation)
+- [KDE Plasma Widget](#kde-plasma-widget)
+- [Profiles](#profiles)
+- [Diagnostics](#diagnostics)
+- [Configuration](#configuration)
+- [Removal](#removal)
+- [License](#license)
 
 ## Safety
 
@@ -11,108 +22,114 @@ Local fan controller for Apple Silicon MacBook Pro running Asahi Linux. It talks
 - When the service stops, it writes `0` to `fanX_target` to hand control back to the SMC.
 - systemd's watchdog restarts the controller if it stops responding.
 
-Manual fan control is flagged as unsafe by the kernel itself, since there's no formal recovery guarantee for every failure mode. Use it with care.
+> **Note:** Manual fan control is flagged as unsafe by the kernel itself, since there's no formal recovery guarantee for every failure mode. Use it with care.
 
 ## Installation
 
-In a terminal, go into the extracted folder and run:
+Clone or download this repository, then from the project folder run:
 
-```
+```bash
 chmod +x install.sh uninstall.sh
 sudo ./install.sh
 ```
 
-If the installer asks, reboot the computer. Then open in your browser:
+If the installer prompts you to, reboot the computer. Then open the dashboard in your browser:
 
 ```
 http://127.0.0.1:8799
 ```
 
-The dashboard only listens on `127.0.0.1`: it's not reachable from the network.
-You can also open it from the **Asahi Fan Control** icon installed in the Fedora application menu.
+The dashboard only listens on `127.0.0.1` — it is not reachable from the network.
+You can also launch it from the **Asahi Fan Control** icon in the Fedora application menu.
 
-## Installing the KDE Plasma widget
+## KDE Plasma Widget
 
-The repository includes a ready-made widget package, `asahi-fan-control-widget-v1.1.2.plasmoid`, for adding fan status/control to your panel or desktop.
+A ready-made widget package, [`asahi-fan-control-widget-v1.1.2.plasmoid`](./asahi-fan-control-widget-v1.1.2.plasmoid), is included for adding fan status and control to your panel or desktop.
 
-**Option A — from the KDE UI (no terminal):**
+### Option A — Install via the KDE UI
 
-1. Right-click on the desktop or on a panel and choose **Add Widgets…**
+1. Right-click on the desktop or on a panel and select **Add Widgets…**
 2. In the Widget Explorer, click **Get New Widgets** → **Install Widget From Local File…**
-3. Select the downloaded `asahi-fan-control-widget-v1.1.2.plasmoid` file and confirm.
-4. The widget will now appear in the widget list — drag it onto your panel or desktop.
+3. Select `asahi-fan-control-widget-v1.1.2.plasmoid` and confirm.
+4. The widget now appears in the widget list — drag it onto your panel or desktop.
 
-**Option B — from the terminal, with `kpackagetool6`:**
+### Option B — Install via terminal
 
-```
+```bash
 kpackagetool6 --type Plasma/Applet --install asahi-fan-control-widget-v1.1.2.plasmoid
 ```
 
-To update it later to a newer version of the same package:
+**Update to a newer version:**
 
-```
+```bash
 kpackagetool6 --type Plasma/Applet --upgrade asahi-fan-control-widget-v1.1.2.plasmoid
 ```
 
-If it doesn't show up right away, restart Plasma Shell:
+**If the widget doesn't appear immediately, restart Plasma Shell:**
 
-```
+```bash
 kquitapp6 plasmashell && kstart plasmashell
 ```
 
 Then add it as usual via **Add Widgets…** and search for **Asahi Fan Control**.
 
-To remove it:
+**Remove the widget:**
 
-```
+```bash
 kpackagetool6 --type Plasma/Applet --remove com.<widget-package-id>
 ```
 
-(check the exact package ID inside the plasmoid's `metadata.json` if the name above doesn't match).
+Check the exact package ID in the plasmoid's `metadata.json` if the placeholder above doesn't match.
 
 ## Profiles
 
-- **Silent:** the controller takes over at 65 °C.
-- **Balanced:** takes over at 55 °C.
-- **Cool:** takes over at 45 °C.
-- **Manual:** 20–100%, while keeping critical-temperature protection.
-- **Apple SMC:** control fully handed back to the firmware.
+| Profile | Behavior |
+|---|---|
+| **Silent** | Controller takes over at 65 °C |
+| **Balanced** | Controller takes over at 55 °C |
+| **Cool** | Controller takes over at 45 °C |
+| **Manual** | 20–100%, with critical-temperature protection always active |
+| **Apple SMC** | Control fully returned to the firmware |
 
 ## Diagnostics
 
-```
+```bash
 sudo /opt/asahi-fan-control/asahi_fan_control.py --check
 systemctl status asahi-fan-control
 journalctl -u asahi-fan-control -f
 ```
 
-If `control_available` shows up as `false`, check the supported parameter:
+If `control_available` shows as `false`, check the supported module parameter:
 
-```
+```bash
 modinfo -p macsmc-hwmon
 ```
 
-On current versions it's `fan_control=1`; older Asahi kernels may call it `melt_my_mac=1`.
+On current kernels it's `fan_control=1`; older Asahi kernels may call it `melt_my_mac=1`.
 
 On Fedora Asahi, if the module is loaded by `initramfs`, enable the parameter directly on the boot line and reboot:
 
-```
+```bash
 sudo grubby --update-kernel=ALL --args="macsmc_hwmon.fan_control=1"
 sudo reboot
 ```
 
 ## Configuration
 
-The file is `/etc/asahi-fan-control.json`. You can change temperatures, hysteresis, which sensors are considered, and the dashboard port. Then restart:
+Settings live in `/etc/asahi-fan-control.json` — temperatures, hysteresis, which sensors are considered, and the dashboard port can all be changed there. Restart the service afterward:
 
-```
+```bash
 sudo systemctl restart asahi-fan-control
 ```
 
 ## Removal
 
-```
+```bash
 sudo ./uninstall.sh
 ```
 
 The uninstaller preserves `/etc/asahi-fan-control.json` and hands the fans back to the SMC before removing the service.
+
+## License
+
+No license file is currently included in this repository. Consider adding one (e.g. MIT, GPLv3) to clarify how others may use, modify, and distribute this project.
